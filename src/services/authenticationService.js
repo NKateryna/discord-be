@@ -5,6 +5,7 @@ const { JWT } = require("../utils");
 
 async function loginEndpoint(req, res) {
   try {
+    res.setHeader("Content-Type", "application/json");
     const { email, password } = req.body;
 
     const usersCollection = mongoose.connection
@@ -49,6 +50,7 @@ async function loginEndpoint(req, res) {
   }
 }
 async function registerEndpoint(req, res) {
+  res.setHeader("Content-Type", "application/json");
   const {
     email,
     username,

@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const { mongoConnectionString } = require("./constants");
 const { applyREST, usersRoutes, authenticationRoutes } = require("./rest");
 const { channelsRoutes } = require("./rest");
@@ -13,6 +14,11 @@ async function start() {
     const PORT = 80;
     const applyRESTroutes = applyREST.bind(app);
     app.use(bodyParser.json());
+    app.use(
+      cors({
+        origin: "*",
+      })
+    );
 
     mongoose.set("strictQuery", false);
     await mongoose.connect(mongoConnectionString(process.env.MONGO_PASS));
