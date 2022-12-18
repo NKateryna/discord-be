@@ -1,4 +1,5 @@
 const env = require("dotenv");
+const axios = require("axios");
 const jwt = require("jsonwebtoken");
 
 function configureEnv() {
@@ -16,4 +17,6 @@ const JWT = {
     jwt.verify(token, secret),
 };
 
-module.exports = { configureEnv, JWT };
+const axiosInstance = axios.default.create();
+
+module.exports = { configureEnv, JWT, axiosInstance };

@@ -10,6 +10,15 @@ const API_URL = "/auth";
 
 const authenticationRoutes = (app) => {
   app.post(
+    /**
+     * POST /auth/login
+     * payload: { email: string, password: string }
+     * response: {
+     *   accessToken: string,
+     *   username:    string,
+     *   hash:        number,
+     * }
+     */
     `${API_URL}/login`,
     withValidations(
       authenticationService.login,
@@ -18,6 +27,24 @@ const authenticationRoutes = (app) => {
     )
   );
   app.post(
+    /**
+     * POST /auth/register
+     * payload: {
+     *   email: string,
+     *   username: string,
+     *   birthDate: Date,
+     *   password: string
+     * }
+     * response: {
+     *   accessToken:          string,
+     *   email:                string,
+     *   username:             string,
+     *   birthDate:            Date,
+     *   acceptNotifications:  boolean,
+     *   status:               string,
+     *   hash:                 number,
+     * }
+     */
     `${API_URL}/register`,
     withValidations(
       authenticationService.register,

@@ -1,9 +1,9 @@
-const channelsService = require("./channelsService");
+const serversService = require("./serversService");
 const usersService = require("./usersService");
 const authenticationService = require("./authenticationService");
 
 module.exports = {
-  channelsService,
+  serversService,
   usersService,
   authenticationService,
 };

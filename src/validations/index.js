@@ -1,10 +1,8 @@
 const { errorResponses } = require("../errors");
-const {
-  authValidation,
-  loginPayloadValidation,
-  statusValidation,
-} = require("./auth");
+const { authValidation, loginPayloadValidation } = require("./auth");
 const { emailValidation } = require("./email");
+const { statusValidation } = require("./user");
+const { requiredValidation } = require("./required");
 
 function withValidations(serviceFn, ...validations) {
   return (req, res) => {
@@ -31,4 +29,5 @@ module.exports = {
   emailValidation,
   loginPayloadValidation,
   statusValidation,
+  requiredValidation,
 };

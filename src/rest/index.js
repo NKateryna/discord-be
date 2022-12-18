@@ -1,4 +1,4 @@
-const { channelsRoutes } = require("./channels");
+const { serversRoutes } = require("./servers");
 const { usersRoutes } = require("./users");
 const { authenticationRoutes } = require("./authentication");
 
@@ -10,7 +10,7 @@ function applyREST(...services) {
 
 module.exports = {
   applyREST,
-  channelsRoutes,
+  serversRoutes,
   usersRoutes,
   authenticationRoutes,
 };
