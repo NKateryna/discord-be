@@ -17,6 +17,10 @@ const serversRoutes = (app) => {
       requiredValidation("name")
     )
   );
+  app.get(
+    `${API_URL}/explore`,
+    withValidations(serversService.exploreServers, authValidation)
+  );
 };
 
 module.exports = {

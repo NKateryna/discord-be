@@ -3,6 +3,7 @@ const ERRORS = {
   UNAUTHORIZED: "unauthorized",
   INVALID_PAYLOAD: "invalid-payload",
   USER_NOT_FOUND: "user-not-found",
+  NOT_FOUND: "not-found",
   EMAIL_INVALID: "email-is-not-valid",
   PASSWORD_INVALID: "password-is-not-valid",
 };
@@ -23,6 +24,10 @@ const errorResponses = {
   [ERRORS.USER_NOT_FOUND]: {
     code: 404,
     message: "User not found",
+  },
+  [ERRORS.NOT_FOUND]: {
+    code: 404,
+    message: "Not found",
   },
   [ERRORS.EMAIL_INVALID]: {
     code: 400,

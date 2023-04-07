@@ -33,6 +33,7 @@ const authenticationRoutes = (app) => {
      *   email: string,
      *   username: string,
      *   birthDate: Date,
+     *   acceptNotifications: boolean,
      *   password: string
      * }
      * response: {
@@ -43,6 +44,9 @@ const authenticationRoutes = (app) => {
      *   acceptNotifications:  boolean,
      *   status:               string,
      *   hash:                 number,
+     *   microphone: true,
+     *   headphones: true,
+     *   avatar: string,
      * }
      */
     `${API_URL}/register`,

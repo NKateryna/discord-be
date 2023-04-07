@@ -1,32 +1,30 @@
 const { default: mongoose } = require("mongoose");
 const fetch = require("node-fetch");
+const { Sessions, Servers } = require("../models");
 
 async function getServers(req, res) {
+  res.setHeader("Content-Type", "application/json");
   const authorization = req.header("Authorization");
   const token = authorization.split(" ")[1];
 
-  const session = await mongoose.connection
-    .useDb("auth")
-    .collection("sessions")
-    .findOne({ sessionId: token });
+  const session = await Sessions.findOne({ sessionId: token });
 
   const { user } = session;
 
-  const channels = await mongoose.connection
-    .useDb("auth")
-    .collection("servers")
-    .find({ members: { $in: [mongoose.Types.ObjectId(user)] } })
-    .toArray();
+  const channels = await Servers.find({
+    members: { $in: [mongoose.Types.ObjectId(user)] },
+  });
 
   res.status(200).send(
     JSON.stringify({
-      data: channels,
+      data: channels.map(({ _id, name, photo }) => ({ _id, name, photo })),
       total: channels.length,
     })
   );
 }
 
 async function createServer(req, res) {
+  res.setHeader("Content-Type", "application/json");
   const { name } = req.body;
   const response = await fetch(
     "https://api.unsplash.com/photos/random?query=cute+cats&client_id=fvalt3cvxdBMbL6LiqXfmXh4H_BOKqoeEra2HvIn-YA"
@@ -37,20 +35,16 @@ async function createServer(req, res) {
   const authorization = req.header("Authorization");
   const token = authorization.split(" ")[1];
 
-  const session = await mongoose.connection
-    .useDb("auth")
-    .collection("sessions")
-    .findOne({ sessionId: token });
+  const session = await Sessions.findOne({ sessionId: token });
 
   const { user } = session;
-  const server = await mongoose.connection
-    .useDb("auth")
-    .collection("servers")
-    .insertOne({
-      name,
-      photo,
-      members: [mongoose.Types.ObjectId(user)],
-    });
+
+  const server = new Servers({
+    name,
+    photo,
+    members: [mongoose.Types.ObjectId(user)],
+  });
+  await server.save();
 
   res.status(200).send(
     JSON.stringify({
@@ -61,8 +55,30 @@ async function createServer(req, res) {
   );
 }
 
+async function exploreServers(req, res) {
+  res.setHeader("Content-Type", "application/json");
+  const authorization = req.header("Authorization");
+  const token = authorization.split(" ")[1];
+
+  const session = await Sessions.findOne({ sessionId: token });
+
+  const { user } = session;
+
+  const channels = await Servers.find({
+    members: { $nin: [mongoose.Types.ObjectId(user)] },
+  });
+
+  res.status(200).send(
+    JSON.stringify({
+      data: channels.map(({ _id, name, photo }) => ({ _id, name, photo })),
+      total: channels.length,
+    })
+  );
+}
+
 module.exports = {
   getServers,
   createServer,
+  exploreServers,
   joinServer: null,
 };

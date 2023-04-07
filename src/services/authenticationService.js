@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
-const uuid = require("uuid");
 const { errorResponses, ERRORS } = require("../errors");
+const { Users, Sessions } = require("../models");
 const { JWT } = require("../utils");
 
 async function loginEndpoint(req, res) {
@@ -8,14 +8,7 @@ async function loginEndpoint(req, res) {
     res.setHeader("Content-Type", "application/json");
     const { email, password } = req.body;
 
-    const usersCollection = mongoose.connection
-      .useDb("auth")
-      .collection("users");
-    const sessionsCollection = mongoose.connection
-      .useDb("auth")
-      .collection("sessions");
-
-    const user = await usersCollection.findOne({
+    const user = await Users.findOne({
       email,
       password: JWT.encode(password),
     });
@@ -23,7 +16,7 @@ async function loginEndpoint(req, res) {
       throw errorResponses[ERRORS.USER_NOT_FOUND];
     }
 
-    await sessionsCollection.findOneAndDelete({
+    await Sessions.findOneAndDelete({
       user: mongoose.Types.ObjectId(user._id),
     });
 
@@ -32,17 +25,21 @@ async function loginEndpoint(req, res) {
       process.env.ACCESS_SECRET
     );
 
-    await sessionsCollection.insertOne({
+    const session = new Sessions({
       user: mongoose.Types.ObjectId(user._id),
       sessionId,
-      createdAt: new Date(),
     });
+    await session.save();
 
     res.status(200).send(
       JSON.stringify({
         accessToken: sessionId,
         username: user.username,
         hash: user.hash,
+        status: user.status,
+        microphone: user.microphone,
+        headphones: user.headphones,
+        avatar: user.avatar || null,
       })
     );
   } catch (error) {
@@ -58,14 +55,10 @@ async function registerEndpoint(req, res) {
     birthDate,
     acceptNotifications = false,
   } = req.body;
-  const usersCollection = mongoose.connection.useDb("auth").collection("users");
-  const sessionsCollection = mongoose.connection
-    .useDb("auth")
-    .collection("sessions");
 
   const hash = Math.floor(Math.random() * 1000);
 
-  const user = await usersCollection.insertOne({
+  const user = new Users({
     email,
     username,
     password: JWT.encode(password),
@@ -73,18 +66,25 @@ async function registerEndpoint(req, res) {
     acceptNotifications,
     status: "ONLINE",
     hash,
+    microphone: true,
+    headphones: true,
+    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      username
+    )}&size=64`,
   });
+  await user.save();
 
   const sessionId = JWT.encode(
     { email, id: user.insertedId },
     process.env.ACCESS_SECRET
   );
 
-  await sessionsCollection.insertOne({
-    user: user.insertedId,
+  const session = new Sessions({
+    user: user._id,
     sessionId: sessionId,
     createdAt: new Date(),
   });
+  await session.save();
 
   res.status(200).send(
     JSON.stringify({
@@ -95,6 +95,11 @@ async function registerEndpoint(req, res) {
       acceptNotifications,
       status: "ONLINE",
       hash,
+      microphone: true,
+      headphones: true,
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        username
+      )}&size=64`,
     })
   );
 }
