@@ -44,6 +44,7 @@ async function getMe(req, res) {
         microphone: session.user.microphone,
         headphones: session.user.headphones,
         avatar: session.user.avatar,
+        createdAt: session.user.createdAt,
       })
     );
   } catch (error) {
