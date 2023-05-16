@@ -72,7 +72,7 @@ const SessionsSchema = new Schema(
       ref: "users",
     },
     sessionId: String,
-    createdAt: { type: Date, default: Date.now },
+    createdAt: { type: Date, default: Date.now, expires: 604800 },
   },
   { versionKey: false }
 );
