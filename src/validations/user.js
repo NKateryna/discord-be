@@ -28,8 +28,28 @@ function addFriendValidation(req) {
   return { success: true };
 }
 
+function friendIdValidation(req) {
+  const { friendId } = req.params;
+
+  if (!friendId) {
+    return { success: false, error: ERRORS.INVALID_PAYLOAD };
+  }
+  return { success: true };
+}
+
+function conversationIdValidation(req) {
+  const { conversationId } = req.params;
+
+  if (!friendId) {
+    return { success: false, error: ERRORS.INVALID_PAYLOAD };
+  }
+  return { success: true };
+}
+
 module.exports = {
   statusValidation,
   friendsStatusValidation,
   addFriendValidation,
+  friendIdValidation,
+  conversationIdValidation,
 };

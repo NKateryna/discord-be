@@ -256,7 +256,10 @@ async function getFriends(req, res) {
       );
     }
 
-    res.status(200).send(JSON.stringify(data));
+    res.status(200).send(JSON.stringify({
+      data: data.friends,
+      total: data.friends.length,
+    }));
   } catch (error) {
     res.status(error.code || 400).send(JSON.stringify(error));
   }
@@ -423,12 +426,22 @@ async function blockUser(req, res) {
       { user: mongoose.Types.ObjectId(id) },
       { $pullAll: { friends: [{ _id: mongoose.Types.ObjectId(friendId) }] } }
     );
+    await Friends.findOneAndUpdate(
+        { user: mongoose.Types.ObjectId(friendId) },
+        { $pullAll: { friends: [{ _id: mongoose.Types.ObjectId(id) }] } }
+    );
 
     await Pending.findOneAndUpdate(
       { user: mongoose.Types.ObjectId(id) },
       {
         $pullAll: { friends: [{ _id: mongoose.Types.ObjectId(friendId) }] },
       }
+    );
+    await Pending.findOneAndUpdate(
+        { user: mongoose.Types.ObjectId(friendId) },
+        {
+          $pullAll: { friends: [{ _id: mongoose.Types.ObjectId(id) }] },
+        }
     );
 
     res.status(204).send();

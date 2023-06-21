@@ -5,6 +5,8 @@ const {
   statusValidation,
   friendsStatusValidation,
   addFriendValidation,
+  friendIdValidation,
+  conversationIdValidation,
 } = require("./user");
 const { requiredValidation } = require("./required");
 
@@ -36,4 +38,6 @@ module.exports = {
   requiredValidation,
   friendsStatusValidation,
   addFriendValidation,
+  friendIdValidation,
+  conversationIdValidation,
 };

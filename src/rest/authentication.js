@@ -12,7 +12,14 @@ const authenticationRoutes = (app) => {
   app.post(
     /**
      * POST /auth/login
-     * payload: { email: string, password: string }
+     * Authorize to server
+     *
+     * headers: {
+     *     Authorization: Bearer <token>
+     * }
+     *
+     * body: { email: string, password: string }
+     *
      * response: {
      *   accessToken: string,
      *   username:    string,
@@ -29,13 +36,20 @@ const authenticationRoutes = (app) => {
   app.post(
     /**
      * POST /auth/register
-     * payload: {
+     * Creates a new account
+     *
+     * headers: {
+     *     Authorization: Bearer <token>
+     * }
+     *
+     * body: {
      *   email: string,
      *   username: string,
      *   birthDate: Date,
      *   acceptNotifications: boolean,
      *   password: string
      * }
+     *
      * response: {
      *   accessToken:          string,
      *   email:                string,
