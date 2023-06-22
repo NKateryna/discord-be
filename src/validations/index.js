@@ -8,7 +8,7 @@ const {
   friendIdValidation,
   conversationIdValidation,
 } = require("./user");
-const { requiredValidation } = require("./required");
+const { requiredValidation, requiredURLParamsValidation } = require("./required");
 
 function withValidations(serviceFn, ...validations) {
   return (req, res) => {
@@ -36,6 +36,7 @@ module.exports = {
   loginPayloadValidation,
   statusValidation,
   requiredValidation,
+  requiredURLParamsValidation,
   friendsStatusValidation,
   addFriendValidation,
   friendIdValidation,

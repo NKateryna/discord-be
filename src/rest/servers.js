@@ -2,7 +2,7 @@ const { serversService } = require("../services");
 const {
   withValidations,
   authValidation,
-  requiredValidation,
+  requiredValidation, requiredURLParamsValidation,
 } = require("../validations");
 
 const API_URL = "/servers";
@@ -71,9 +71,43 @@ const serversRoutes = (app) => {
     `${API_URL}/explore`,
     withValidations(serversService.exploreServers, authValidation)
   );
+  app.post(
+      /**
+       * POST /servers/:serverId
+       * Join to the new server
+       * headers: {
+       *     Authorization: Bearer <authToken>
+       * }
+       *
+       * parameters: {
+       *     serverId: URL, required
+       * }
+       *
+       * response: N/A
+       * successCode: 204
+       */
+      `${API_URL}/:serverId`,
+      withValidations(serversService.joinServer, authValidation, requiredURLParamsValidation('serverId'))
+  );
+  app.delete(
+      /**
+       * DELETE /servers/:serverId
+       * Leave the server
+       * headers: {
+       *     Authorization: Bearer <authToken>
+       * }
+       *
+       * parameters: {
+       *     serverId: URL, required
+       * }
+       *
+       * response: N/A
+       * successCode: 204
+       */
+      `${API_URL}/:serverId`,
+      withValidations(serversService.leaveServer, authValidation, requiredURLParamsValidation('serverId'))
+  );
 };
-
-/* POST /servers/:serverId -- join server */
 
 module.exports = {
   serversRoutes,

@@ -9,4 +9,13 @@ const requiredValidation = (...keys) => {
   };
 };
 
-module.exports = { requiredValidation };
+const requiredURLParamsValidation = (...keys) => {
+  return (req) => {
+    if(keys.some((key) => Object.keys(req.params).indexOf(key) === -1))  {
+      return { success: false, error: ERRORS.INVALID_PAYLOAD };
+    }
+    return { success: true };
+  };
+};
+
+module.exports = { requiredValidation, requiredURLParamsValidation };
