@@ -193,6 +193,37 @@ async function getConversations(req, res) {
   }
 }
 
+async function mockConversations(req, res) {
+  try {
+    res.setHeader("Content-Type", "application/json");
+
+    const authorization = req.header("Authorization");
+    const token = authorization.split(" ")[1];
+
+    const { id } = JWT.decode(token, process.env.ACCESS_SECRET);
+
+    await DMs.deleteMany({ receiver: mongoose.Types.ObjectId(id) });
+
+    const mockIds = [
+        '63f3e217a5eb44eb8fbdc8eb',
+      '63f94646c01c1d9dcd1f7df8',
+      '63f9465bc01c1d9dcd1f7dfc',
+      '63f94661c01c1d9dcd1f7e00',
+      '63f94669c01c1d9dcd1f7e04'
+    ];
+
+    const data = await DMs.insertMany(mockIds.map((mockId, index) => new DMs({
+      lastMessage: new Date(Date.now() - index * 5000),
+      sender: mongoose.Types.ObjectId(mockId),
+      receiver: mongoose.Types.ObjectId(id),
+    })))
+
+    res.status(204).send(data);
+  } catch (error) {
+    res.status(error.code || 400).send(JSON.stringify(error));
+  }
+}
+
 async function deleteConversation(req, res) {
   try {
     res.setHeader("Content-Type", "application/json");
@@ -485,4 +516,5 @@ module.exports = {
   unblockUser,
   acceptFriend,
   denyFriend,
+  mockConversations,
 };

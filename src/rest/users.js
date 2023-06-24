@@ -291,6 +291,11 @@ const usersRoutes = (app) => {
     `${API_URL}/friends/accept/:friendId`,
     withValidations(usersService.denyFriend, authValidation, friendIdValidation)
   );
+
+  app.post(
+      `${API_URL}/conversations/mock`,
+      withValidations(usersService.mockConversations, authValidation)
+  );
 };
 
 module.exports = {
