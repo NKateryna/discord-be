@@ -40,7 +40,7 @@ function friendIdValidation(req) {
 function conversationIdValidation(req) {
   const { conversationId } = req.params;
 
-  if (!friendId) {
+  if (!conversationId) {
     return { success: false, error: ERRORS.INVALID_PAYLOAD };
   }
   return { success: true };

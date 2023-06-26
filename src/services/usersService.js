@@ -205,18 +205,23 @@ async function mockConversations(req, res) {
     await DMs.deleteMany({ receiver: mongoose.Types.ObjectId(id) });
 
     const mockIds = [
-        '63f3e217a5eb44eb8fbdc8eb',
-      '63f94646c01c1d9dcd1f7df8',
-      '63f9465bc01c1d9dcd1f7dfc',
-      '63f94661c01c1d9dcd1f7e00',
-      '63f94669c01c1d9dcd1f7e04'
+      "63f3e217a5eb44eb8fbdc8eb",
+      "63f94646c01c1d9dcd1f7df8",
+      "63f9465bc01c1d9dcd1f7dfc",
+      "63f94661c01c1d9dcd1f7e00",
+      "63f94669c01c1d9dcd1f7e04",
     ];
 
-    const data = await DMs.insertMany(mockIds.map((mockId, index) => new DMs({
-      lastMessage: new Date(Date.now() - index * 5000),
-      sender: mongoose.Types.ObjectId(mockId),
-      receiver: mongoose.Types.ObjectId(id),
-    })))
+    const data = await DMs.insertMany(
+      mockIds.map(
+        (mockId, index) =>
+          new DMs({
+            lastMessage: new Date(Date.now() - index * 5000),
+            sender: mongoose.Types.ObjectId(mockId),
+            receiver: mongoose.Types.ObjectId(id),
+          })
+      )
+    );
 
     res.status(204).send(data);
   } catch (error) {
@@ -287,10 +292,12 @@ async function getFriends(req, res) {
       );
     }
 
-    res.status(200).send(JSON.stringify({
-      data: data.friends,
-      total: data.friends.length,
-    }));
+    res.status(200).send(
+      JSON.stringify({
+        data: data.friends,
+        total: data.friends.length,
+      })
+    );
   } catch (error) {
     res.status(error.code || 400).send(JSON.stringify(error));
   }
@@ -458,8 +465,8 @@ async function blockUser(req, res) {
       { $pullAll: { friends: [{ _id: mongoose.Types.ObjectId(friendId) }] } }
     );
     await Friends.findOneAndUpdate(
-        { user: mongoose.Types.ObjectId(friendId) },
-        { $pullAll: { friends: [{ _id: mongoose.Types.ObjectId(id) }] } }
+      { user: mongoose.Types.ObjectId(friendId) },
+      { $pullAll: { friends: [{ _id: mongoose.Types.ObjectId(id) }] } }
     );
 
     await Pending.findOneAndUpdate(
@@ -469,10 +476,10 @@ async function blockUser(req, res) {
       }
     );
     await Pending.findOneAndUpdate(
-        { user: mongoose.Types.ObjectId(friendId) },
-        {
-          $pullAll: { friends: [{ _id: mongoose.Types.ObjectId(id) }] },
-        }
+      { user: mongoose.Types.ObjectId(friendId) },
+      {
+        $pullAll: { friends: [{ _id: mongoose.Types.ObjectId(id) }] },
+      }
     );
 
     res.status(204).send();
