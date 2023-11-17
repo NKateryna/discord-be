@@ -294,8 +294,8 @@ async function getFriends(req, res) {
 
     res.status(200).send(
       JSON.stringify({
-        data: data.friends,
-        total: data.friends.length,
+        data: data?.friends || [],
+        total: data?.friends.length || 0,
       })
     );
   } catch (error) {
